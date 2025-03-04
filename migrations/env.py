@@ -26,7 +26,6 @@ if config.config_file_name is not None:
 app = create_app()
 target_metadata = Base.metadata
 
-print(DATABASE_URL)
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # other values from the config, defined by the needs of env.py,
