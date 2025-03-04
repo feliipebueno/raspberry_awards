@@ -1,0 +1,25 @@
+[run]
+omit =
+    */tests/*
+    */migrations/*
+    *__init__.py*
+    */packages/*
+    */main.py*
+    */abstract.py*
+    */schemas/*
+    */utils/*
+
+# Configuration for async and sync coverage
+concurrency=
+    thread
+    greenlet
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    if __name__ == .__main__.:
+
+[tool:pytest]
+addopts = --cov-report html
+
+

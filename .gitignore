@@ -1,0 +1,54 @@
+# file: ~/.gitignore_global
+.DS_Store
+.idea
+
+.idea/
+app/drp_processing/pastebin/datalake_pastbin.py
+
+# Unit teste / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+.ideia
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+### VirtualEnv ###
+# Virtualenv
+# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pip-selfcheck.json
+
+# Default ignored files
+/shelf/
+/workspace.xml
+
+# ---- Sonar
+.sonar
+
+/*/awards.sqlite3
+/*/awards-test.sqlite3
+
