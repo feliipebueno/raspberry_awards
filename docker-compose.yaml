@@ -1,0 +1,15 @@
+services:
+
+  awards:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DOCS=${DOCS}
+      - REDOC=${REDOC}
+      - OPEN_API_URL=${OPEN_API_URL}
+      - AMBIENT_ENV=${AMBIENT_ENV}
+      - LOG_NAME=${LOG_NAME}
+    ports:
+      - "7000:7000"
