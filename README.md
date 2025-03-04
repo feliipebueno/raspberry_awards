@@ -4,6 +4,10 @@ Golden Raspberry Award-winning films. The application highlights the shortest an
 intervals between consecutive wins, offering an analysis of the data for educational and 
 experimental purposes.
 
+## Folder structure
+
+![folder_structure.png](images_doc/folder_structure.png)
+
 ## Environment Variables
 
 Environment variables are configurable values in the operating system that influence the 
