@@ -1,0 +1,15 @@
+[lint]
+exclude = [
+    "migrations/**",
+]
+select = [
+    "E", # Pycodestyle
+    "F", # Pyflakes
+    "UP", # Pyupgrade
+    "B", # Flake8-bugbear
+    "SIM", # Flake8-simplify
+    "I", # Isort
+    "D", # Docstring
+]
+
+ignore = ["UP008", "D104", "I001", "D211", "D203", "D213", "B009", "B008", "SIM910"]
