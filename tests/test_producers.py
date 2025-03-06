@@ -25,7 +25,7 @@ def mock_data(session: Session) -> Session:
         Session: The database session with the added movie records.
 
     """
-    movie_1 = Movie(year=2000, title="Movie 1", studios="Studio 1",
+    movie_1 = Movie(year=1990, title="Movie 1", studios="Studio 1",
                     producers="Producer X", winner=True)
     movie_2 = Movie(year=2002, title="Movie 2", studios="Studio 1",
                     producers="Producer X", winner=True)

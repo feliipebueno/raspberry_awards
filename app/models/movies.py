@@ -1,8 +1,7 @@
 """Movies model implementation."""
+from collections import defaultdict
 
-from collections.abc import Sequence
-
-from sqlalchemy import Column, Integer, String, Boolean, text
+from sqlalchemy import Column, Integer, String, Boolean, select
 from sqlalchemy.orm import Session
 
 from app.db.sqlite import Base
@@ -70,54 +69,54 @@ class MovieDTO:
         """
         self.__session = session
 
-    def get_winning_movies(self) -> Sequence:
-        """Get all winning movies and their associated producers.
+    def get_winning_movies(self) -> dict:
+        """Get winning movies and calculate intervals for each producer.
 
-        This method queries the `Movie` table for all movies that have won awards.
-        It retrieves the year and producers of the winning movies.
+        This method executes a query to select the producers and years of winning
+        movies. It then calculates the intervals between the years each producer won.
+        The results are sorted by the interval and returned, with the minimum and
+        maximum intervals separately.
 
         Arguments:
             Has no arguments.
 
         Returns:
-            Sequence: A sequence (e.g., list) of tuples, where each tuple contains the
-                year and the producers of a winning movie.
+            dict: A dictionary with two keys:
+                - "min" (list): A list containing the producer with the smallest
+                    winning interval.
+                - "max" (list): A list containing the producer with the largest
+                    winning interval.
 
         """
-        sql = """
-           WITH RankedMovies AS (
-            SELECT 
-                producers, 
-                year, 
-                LAG(year) OVER (PARTITION BY producers ORDER BY year) AS previousWin
-            FROM movies 
-            WHERE winner = 1
-            ),
-            Intervals AS (
-                SELECT 
-                    producers,
-                    year AS followingWin,
-                    previousWin,
-                    (year - previousWin) AS interval
-                FROM RankedMovies
-                WHERE previousWin IS NOT NULL
-            ),
-            MinInterval AS (
-                SELECT * 
-                FROM Intervals 
-                WHERE interval = (SELECT MIN(interval) FROM Intervals)
-            ),
-            MaxInterval AS (
-                SELECT * 
-                FROM Intervals
-                WHERE interval = (SELECT MAX(interval) FROM Intervals)
-            )
-            SELECT 'min' AS type, producers, interval, previousWin, followingWin 
-                FROM MinInterval
-                
-            UNION ALL
-            SELECT 'max' AS type, producers, interval, previousWin, followingWin 
-            FROM MaxInterval;
-        """
-        query = text(sql)
-        return self.__session.execute(query).all()
+        query = select(
+            Movie.producers, Movie.year
+        ).where(Movie.winner.is_(True)).order_by(Movie.producers, Movie.year)
+        movies = (self.__session.execute(query)).all()
+
+        producer_years = defaultdict(list)
+
+        for movie in movies:
+            cleaned_producers = movie.producers.replace(" and ", ",")
+            producers = [producer.strip() for producer in cleaned_producers.split(",")]
+
+            for producer in producers:
+                producer_years[producer].append(movie.year)
+
+        intervals = []
+        for producer, years in producer_years.items():
+            years.sort()
+            for i in range(len(years) - 1):
+                intervals.append({
+                    "producer": producer,
+                    "interval": years[i + 1] - years[i],
+                    "previousWin": years[i],
+                    "followingWin": years[i + 1]
+                })
+
+        sorted_intervals = sorted(intervals, key=lambda x: x["interval"])
+
+        min_intervals = [sorted_intervals[0]]
+
+        max_intervals = [sorted_intervals[-1]]
+
+        return {"min": min_intervals, "max": max_intervals}
