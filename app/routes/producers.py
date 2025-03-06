@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.sqlite import get_db
 from app.models.movies import MovieDTO
-from app.schemas.producers import ProducersResultSchema, ProducersSchema
+from app.schemas.producers import ProducersResultSchema
 from app.utils.exception import http_exception
 from app.utils.logger import Logger
 
@@ -34,18 +34,7 @@ def get_producer_intervals(
 
     """
     try:
-        movies = MovieDTO(session).get_winning_movies()
-        intervals = {"min": [], "max": []}
-
-        for movie in movies:
-            entry = ProducersSchema(
-                producer=movie.producers,
-                interval=movie.interval,
-                previousWin=movie.previousWin,
-                followingWin=movie.followingWin
-            )
-
-            intervals[movie.type].append(entry)
+        intervals = MovieDTO(session).get_winning_movies()
 
         Logger(__name__).info("The movie breaks were requested.")
         return ProducersResultSchema(min=intervals["min"], max=intervals["max"])
